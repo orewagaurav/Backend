@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import jst from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import dotenv from 'dotenv'
 
 const userSchema = new Schema(
   {
@@ -87,5 +88,5 @@ userSchema.methods.generateRefreshToken = function () {
   )
   
 };
-
+dotenv.config()
 export const User = mongoose.model("User", userSchema);
