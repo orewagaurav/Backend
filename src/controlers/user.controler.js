@@ -5,3 +5,5 @@ const registerUser =  asynchandler(async (requestAnimationFrame,res)=> {
         message:"ok"
     })
 })
+
+export default registerUser;
