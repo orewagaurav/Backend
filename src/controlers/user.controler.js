@@ -7,7 +7,6 @@ import ApiResponce from "../utils/ApiResponce.js";
 const registerUser =  asynchandler(async (req,res)=> {
     
     const {fullName,email,username,password} = req.body
-    console.log("email:",email);
     
     if(
         [fullName,email,username,password].some((field) => 
@@ -24,14 +23,19 @@ const registerUser =  asynchandler(async (req,res)=> {
     }
 
     const avtarLocalPath = req.files?.avtar[0]?.path;
-    const coverImageLoacalPath = req.files?.coverImage[0]?.path;
+    // const coverImageLoacalPath = req.files?.coverImage[0]?.path;
+
+    let coverImageLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0 ){
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
 
     if(!avtarLocalPath){
         throw new ApiError(400,"Avtar file is required");
     }
 
     const avtar = await uploadOnCloudinary(avtarLocalPath);
-    const coverImage = await uploadOnCloudinary(coverImageLoacalPath); 
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath); 
 
     if(!avtar){
         throw new ApiError(400,"Avtar file is required");
