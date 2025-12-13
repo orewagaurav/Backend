@@ -4,6 +4,20 @@ import { User } from "../models/user.model.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 import ApiResponce from "../utils/ApiResponce.js";
 
+const generateAccessAndRefreshTokens = async(userId) => {
+    try {
+        const user = await user.findById(userId)
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+
+        user.refreshToken = refreshToken;
+        await user.save({validateBeforeSave: false})
+        return {accessToken,refreshToken}
+    } catch (error) {
+        throw new ApiError(500,"something went wrong while genertaing the access tokens")
+    }
+}
+
 const registerUser =  asynchandler(async (req,res)=> {
     
     const {fullName,email,username,password} = req.body
@@ -63,8 +77,22 @@ const registerUser =  asynchandler(async (req,res)=> {
 })
 
 const loginUser = asynchandler(async(req,res)=>{
-    
+    const {email,username,password} = req.body
+    if(!email || !username){
+        throw new ApiError(400,"Username or password is Required")
+    }
+    const user = await User.findOne({
+        $or: [{username},{email}]
+    })
+    if(!user){
+        throw new ApiError(404,"User does not exists");
+    }
+    const isPasswordValid = await user.isPasswordCorrect(password);
+    if(!isPasswordValid){
+        throw new ApiError(401,"Password is wrong");
+    }
 })
+
 export {registerUser,
          loginUser
 };
