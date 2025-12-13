@@ -62,4 +62,9 @@ const registerUser =  asynchandler(async (req,res)=> {
 
 })
 
-export default registerUser;
+const loginUser = asynchandler(async(req,res)=>{
+    
+})
+export {registerUser,
+         loginUser
+};
