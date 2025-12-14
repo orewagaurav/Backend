@@ -91,6 +91,7 @@ const loginUser = asynchandler(async(req,res)=>{
     if(!isPasswordValid){
         throw new ApiError(401,"Password is wrong");
     }
+    await generateAccessAndRefreshTokens(user._id)
 })
 
 export {registerUser,
